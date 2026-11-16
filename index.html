@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Alinea Imóveis</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  [hidden]{display:none!important}
+  /* Layout: coluna única centrada, muito respiro, imagens como únicas áreas de cor. Acento verde-musgo usado só em ações e preços. */
+  :root {
+    --bg: #f5f6f3; --surface: #ffffff; --ink: #141c18; --muted: #5d6a63;
+    --line: #dfe3dd; --soft: #e9eee9; --accent: #1f5c4a; --accent-ink: #ffffff;
+    --font: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+    --mono: "DM Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e1411; --surface: #151d19; --ink: #eef2ee; --muted: #9aa8a0;
+      --line: #26312b; --soft: #1a241f; --accent: #6fcba9; --accent-ink: #0b1410; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e1411; --surface: #151d19; --ink: #eef2ee; --muted: #9aa8a0;
+    --line: #26312b; --soft: #1a241f; --accent: #6fcba9; --accent-ink: #0b1410; color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 var(--font);
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    -webkit-font-smoothing: antialiased;
+  }
+  body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .wrap { max-width: 1120px; margin: 0 auto; }
+  .mono { font-family: var(--mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+
+  /* header */
+  header.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--bg); border-bottom: 1px solid var(--line); margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding: 0 max(16px, env(safe-area-inset-left, 0px)); }
+  header.top .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; }
+  .logo { font-weight: 700; font-size: 20px; letter-spacing: -.02em; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+  .logo i { width: 22px; height: 22px; border: 2px solid var(--ink); border-radius: 3px; position: relative; display: inline-block; }
+  .logo i::after { content: ""; position: absolute; left: 3px; right: 3px; bottom: 3px; height: 8px; background: var(--accent); }
+  nav { display: flex; gap: 24px; align-items: center; }
+  nav a { text-decoration: none; font-size: 14px; color: var(--muted); }
+  nav a:hover { color: var(--ink); }
+  .iconbtn { width: 38px; height: 38px; border-radius: 999px; border: 1px solid var(--line); background: transparent; cursor: pointer; display: grid; place-items: center; }
+  .iconbtn:hover { background: var(--soft); }
+  @media (max-width: 640px) { nav a { display: none; } }
+
+  /* buttons */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 46px; padding: 0 22px; border-radius: 10px; border: 1px solid var(--ink); background: transparent; cursor: pointer; font-weight: 600; font-size: 15px; text-decoration: none; }
+  .btn:hover { background: var(--soft); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .btn.primary:hover { filter: brightness(1.08); background: var(--accent); }
+
+  /* hero */
+  .hero { padding-block: 72px 56px; display: grid; grid-template-columns: 1.05fr 1fr; gap: 56px; align-items: center; }
+  .hero > * { min-width: 0; }
+  .hero h1 { font-size: clamp(38px, 6vw, 68px); line-height: 1.02; letter-spacing: -.035em; font-weight: 600; margin: 14px 0 20px; text-wrap: balance; }
+  .hero p.lead { color: var(--muted); font-size: 18px; max-width: 46ch; margin: 0 0 32px; }
+  .hero .cta { display: flex; flex-wrap: wrap; gap: 12px; }
+  .hero-art { border-radius: 18px; overflow: hidden; border: 1px solid var(--line); background: var(--soft); position: relative; cursor: pointer; padding: 0; width: 100%; text-align: left; display: block; }
+  .hero-art svg { display: block; width: 100%; height: auto; }
+  .hero-art .tag { position: absolute; left: 16px; bottom: 16px; right: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+  .hero-art .tag strong { font-weight: 600; }
+  @media (max-width: 860px) { .hero { grid-template-columns: 1fr; gap: 36px; padding-block: 48px 40px; } }
+
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; border-top: 1px solid var(--line); padding-block: 28px; }
+  .stats b { display: block; font-size: 28px; letter-spacing: -.02em; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .stats span { color: var(--muted); font-size: 14px; }
+
+  /* listings */
+  section.block { padding-block: 64px; }
+  .head { display: flex; justify-content: space-between; align-items: end; gap: 16px; flex-wrap: wrap; margin-bottom: 28px; }
+  .head h2 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -.03em; margin: 8px 0 0; font-weight: 600; line-height: 1.1; text-wrap: balance; }
+  .tabs { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; padding: 3px; background: var(--surface); }
+  .tabs button { border: 0; background: transparent; padding: 8px 18px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; color: var(--muted); }
+  .tabs button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+
+  .filters { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 28px; }
+  .field label { display: block; margin-bottom: 6px; }
+  .field select, .field input, .field textarea { width: 100%; height: 46px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); padding: 0 14px; }
+  .field textarea { height: 110px; padding: 12px 14px; resize: vertical; }
+  .field select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%); background-position: calc(100% - 20px) 20px, calc(100% - 15px) 20px; background-size: 5px 5px; background-repeat: no-repeat; padding-right: 36px; }
+  @media (max-width: 760px) { .filters { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 24px; }
+  @media (max-width: 960px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 600px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+  .card { text-align: left; background: transparent; border: 0; padding: 0; cursor: pointer; display: flex; flex-direction: column; gap: 14px; }
+  .card .pic { border-radius: 14px; overflow: hidden; border: 1px solid var(--line); background: var(--soft); }
+  .card .pic svg { display: block; width: 100%; height: auto; transition: transform .5s ease; }
+  .card:hover .pic svg { transform: scale(1.03); }
+  .card h3 { margin: 4px 0 0; font-size: 18px; font-weight: 600; letter-spacing: -.01em; line-height: 1.3; text-wrap: balance; }
+  .price { font-weight: 600; color: var(--accent); font-size: 18px; font-variant-numeric: tabular-nums; }
+  .price small { font-weight: 400; color: var(--muted); font-size: 13px; }
+  .specs { display: flex; gap: 16px; flex-wrap: wrap; color: var(--muted); font-size: 14px; padding-top: 12px; border-top: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+  .empty { grid-column: 1 / -1; padding: 56px 0; text-align: center; color: var(--muted); border: 1px dashed var(--line); border-radius: 14px; }
+
+  /* como trabalhamos */
+  .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+  .steps h3 { margin: 10px 0 8px; font-size: 20px; font-weight: 600; letter-spacing: -.01em; }
+  .steps p { margin: 0; color: var(--muted); }
+  .steps > div { border-top: 2px solid var(--ink); padding-top: 18px; }
+  @media (max-width: 760px) { .steps { grid-template-columns: 1fr; gap: 24px; } }
+
+  /* contato */
+  .contact { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
+  .contact > * { min-width: 0; }
+  .contact dl { margin: 28px 0 0; display: grid; gap: 18px; }
+  .contact dt { margin-bottom: 2px; }
+  .contact dd { margin: 0; }
+  form.stack { display: grid; gap: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 24px; }
+  .ok { padding: 28px 8px; text-align: center; }
+  .ok b { display: block; font-size: 20px; margin-bottom: 6px; }
+  @media (max-width: 860px) { .contact { grid-template-columns: 1fr; gap: 36px; } }
+
+  footer { border-top: 1px solid var(--line); padding-block: 28px 40px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; color: var(--muted); font-size: 14px; }
+
+  /* modal */
+  .overlay { position: fixed; inset: 0; z-index: 50; background: rgba(8, 12, 10, .6); display: flex; align-items: flex-start; justify-content: center; overflow-y: auto; padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+  .modal { background: var(--bg); border: 1px solid var(--line); border-radius: 18px; width: 100%; max-width: 920px; margin-block: 24px; overflow: hidden; position: relative; }
+  .modal .close { position: absolute; right: 14px; top: 14px; z-index: 2; background: var(--surface); }
+  .modal .cols { display: grid; grid-template-columns: 1.1fr 1fr; }
+  .modal .cols > * { min-width: 0; }
+  .modal .art svg { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .modal .art { background: var(--soft); min-height: 220px; }
+  .modal .body { padding: 28px; display: grid; gap: 14px; align-content: start; }
+  .modal h3 { margin: 0; font-size: 26px; letter-spacing: -.02em; line-height: 1.15; font-weight: 600; text-wrap: balance; }
+  .modal .price { font-size: 24px; }
+  .facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .facts div { border: 1px solid var(--line); border-radius: 10px; padding: 10px 8px; text-align: center; background: var(--surface); }
+  .facts b { display: block; font-size: 18px; font-variant-numeric: tabular-nums; }
+  .facts span { font-size: 12px; color: var(--muted); }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tags span { font-size: 13px; padding: 4px 10px; border-radius: 999px; background: var(--soft); }
+  @media (max-width: 760px) { .modal .cols { grid-template-columns: 1fr; } .modal .body { padding: 20px; } }
+
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+</style>
+
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#topo"><i></i>Alinea</a>
+    <nav>
+      <a href="#imoveis">Imóveis</a>
+      <a href="#metodo">Como trabalhamos</a>
+      <a href="#contato">Contato</a>
+      <button class="iconbtn" id="theme" aria-label="Alternar tema claro e escuro" type="button">◐</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap" id="topo">
+  <section class="hero">
+    <div>
+      <span class="mono">Imobiliária · Cidade Exemplo</span>
+      <h1>O imóvel certo, sem ruído.</h1>
+      <p class="lead">Seleção curada de casas e apartamentos para comprar ou alugar, com visita marcada em um dia útil e proposta acompanhada do início ao fim.</p>
+      <div class="cta">
+        <a class="btn primary" href="#imoveis">Ver imóveis</a>
+        <a class="btn" href="#contato">Falar com um corretor</a>
+      </div>
+    </div>
+    <button class="hero-art" id="heroArt" type="button" aria-label="Abrir imóvel em destaque"></button>
+  </section>
+
+  <div class="stats">
+    <div><b>186</b><span>imóveis negociados em 2025</span></div>
+    <div><b>9 dias</b><span>tempo médio até a primeira proposta</span></div>
+    <div><b>12 anos</b><span>de atuação na região</span></div>
+  </div>
+
+  <section class="block" id="imoveis">
+    <div class="head">
+      <div>
+        <span class="mono" id="count">—</span>
+        <h2>Imóveis disponíveis</h2>
+      </div>
+      <div class="tabs" role="group" aria-label="Finalidade">
+        <button type="button" data-fin="venda" aria-pressed="true">Comprar</button>
+        <button type="button" data-fin="aluguel" aria-pressed="false">Alugar</button>
+      </div>
+    </div>
+
+    <div class="filters">
+      <div class="field"><label class="mono" for="fTipo">Tipo</label>
+        <select id="fTipo"><option value="">Todos</option><option>Casa</option><option>Apartamento</option><option>Cobertura</option><option>Sala comercial</option></select></div>
+      <div class="field"><label class="mono" for="fBairro">Bairro</label>
+        <select id="fBairro"><option value="">Todos</option></select></div>
+      <div class="field"><label class="mono" for="fQuartos">Quartos</label>
+        <select id="fQuartos"><option value="0">Qualquer</option><option value="1">1+</option><option value="2">2+</option><option value="3">3+</option></select></div>
+      <div class="field"><label class="mono" for="fOrdem">Ordenar</label>
+        <select id="fOrdem"><option value="rel">Em destaque</option><option value="menor">Menor preço</option><option value="maior">Maior área</option></select></div>
+    </div>
+
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section class="block" id="metodo" style="border-top:1px solid var(--line)">
+    <div class="head"><div><span class="mono">Método</span><h2>Do primeiro contato às chaves</h2></div></div>
+    <div class="steps">
+      <div><span class="mono">Visita</span><h3>Você vê pessoalmente</h3><p>Agendamos a visita em até um dia útil, com o corretor que conhece o imóvel e o bairro.</p></div>
+      <div><span class="mono">Proposta</span><h3>Negociação transparente</h3><p>Valores, taxas e prazos por escrito, antes de qualquer assinatura. Sem letras miúdas.</p></div>
+      <div><span class="mono">Fechamento</span><h3>Documentação resolvida</h3><p>Cuidamos de certidões, vistoria e contrato para você receber as chaves sem pendências.</p></div>
+    </div>
+  </section>
+
+  <section class="block" id="contato" style="border-top:1px solid var(--line)">
+    <div class="contact">
+      <div>
+        <span class="mono">Contato</span>
+        <h2 style="font-size:clamp(28px,4vw,40px);letter-spacing:-.03em;margin:8px 0 0;font-weight:600;line-height:1.1">Conte o que você procura</h2>
+        <p style="color:var(--muted);max-width:42ch">Respondemos em até 2 horas em dias úteis, com opções que combinam com o seu perfil.</p>
+        <dl>
+          <div><dt class="mono">Escritório</dt><dd>Av. Exemplo, 000, sala 12 · Centro<br>Cidade Exemplo – UF</dd></div>
+          <div><dt class="mono">WhatsApp</dt><dd>(00) 90000-0000</dd></div>
+          <div><dt class="mono">Atendimento</dt><dd>Seg a sex, 9h às 18h · Sáb, 9h às 13h</dd></div>
+        </dl>
+      </div>
+      <div id="contactBox"></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>© Alinea Imóveis · CRECI 00000-J</span>
+    <span>Site demonstrativo. Imóveis, preços e contatos fictícios.</span>
+  </footer>
+</main>
+
+<div class="overlay" id="overlay" hidden></div>
+
+<script>
+/* ---------- dados fictícios ---------- */
+const IMOVEIS = [
+  { id: "AL-1041", titulo: "Casa com quintal e varanda gourmet", tipo: "Casa", fin: "venda", bairro: "Jardim das Acácias", preco: 890000, area: 210, q: 3, b: 3, v: 2, art: { kind: "casa", c1: "#d3e6dc", c2: "#2f6f5a" }, desc: "Casa térrea reformada, com cozinha integrada à varanda gourmet e quintal arborizado de 180 m². Rua tranquila, a duas quadras da praça.", itens: ["Varanda gourmet", "Quintal", "Energia solar", "Portão automático"] },
+  { id: "AL-1058", titulo: "Apartamento claro com vista aberta", tipo: "Apartamento", fin: "venda", bairro: "Vila Serena", preco: 540000, area: 78, q: 2, b: 2, v: 1, art: { kind: "apto", c1: "#dfe7f2", c2: "#4a6a94" }, desc: "Andar alto, sol da manhã e vista livre. Cozinha americana, armários planejados e lazer completo no condomínio.", itens: ["Sacada", "Armários planejados", "Piscina", "Academia"] },
+  { id: "AL-1063", titulo: "Cobertura duplex com terraço", tipo: "Cobertura", fin: "venda", bairro: "Alto do Ipê", preco: 1450000, area: 190, q: 3, b: 4, v: 3, art: { kind: "cobertura", c1: "#efe3d4", c2: "#9a6b3c" }, desc: "Duplex de 190 m² com terraço privativo, churrasqueira e vista panorâmica. Três suítes e três vagas cobertas.", itens: ["Terraço", "Churrasqueira", "3 suítes", "Elevador privativo"] },
+  { id: "AL-1072", titulo: "Casa moderna em condomínio fechado", tipo: "Casa", fin: "venda", bairro: "Parque Aurora", preco: 1190000, area: 260, q: 4, b: 4, v: 3, art: { kind: "casa", c1: "#e4e2f0", c2: "#5b4f94" }, desc: "Projeto contemporâneo com pé-direito duplo, piscina aquecida e segurança 24 h. Acabamento de alto padrão.", itens: ["Piscina", "Pé-direito duplo", "Segurança 24h", "Escritório"] },
+  { id: "AL-2011", titulo: "Apartamento mobiliado perto do centro", tipo: "Apartamento", fin: "aluguel", bairro: "Centro", preco: 2800, area: 54, q: 1, b: 1, v: 1, art: { kind: "apto", c1: "#f2e1dc", c2: "#a4513f" }, desc: "Studio completo, pronto para morar. Condomínio com portaria e lavanderia compartilhada. Aceita pets de pequeno porte.", itens: ["Mobiliado", "Aceita pets", "Portaria", "Lavanderia"] },
+  { id: "AL-2024", titulo: "Casa de três quartos com garagem", tipo: "Casa", fin: "aluguel", bairro: "Vila Serena", preco: 3900, area: 140, q: 3, b: 2, v: 2, art: { kind: "casa", c1: "#dcebd0", c2: "#5a8a3a" }, desc: "Casa ampla em rua residencial, com quintal gramado e área de serviço coberta. Contrato de 30 meses.", itens: ["Quintal", "Área de serviço", "2 vagas", "Rua sem saída"] },
+  { id: "AL-2037", titulo: "Apartamento de 2 quartos com lazer", tipo: "Apartamento", fin: "aluguel", bairro: "Parque Aurora", preco: 3200, area: 68, q: 2, b: 2, v: 1, art: { kind: "apto", c1: "#d8ebee", c2: "#2d7f8c" }, desc: "Condomínio novo, com piscina, salão de festas e espaço pet. Cozinha com armários e ar-condicionado nos quartos.", itens: ["Piscina", "Espaço pet", "Ar-condicionado", "Salão de festas"] },
+  { id: "AL-2049", titulo: "Sala comercial térrea com vitrine", tipo: "Sala comercial", fin: "aluguel", bairro: "Centro", preco: 4500, area: 62, q: 0, b: 1, v: 1, art: { kind: "comercial", c1: "#e6e6e6", c2: "#3d4a55" }, desc: "Ponto de rua com vitrine ampla, copa e banheiro. Fluxo intenso de pedestres, a uma quadra do terminal.", itens: ["Vitrine", "Copa", "Ponto de rua", "Alarme"] },
+  { id: "AL-1085", titulo: "Apartamento garden com jardim privativo", tipo: "Apartamento", fin: "venda", bairro: "Alto do Ipê", preco: 720000, area: 96, q: 3, b: 2, v: 2, art: { kind: "apto", c1: "#e2ecd4", c2: "#6a8f35" }, desc: "Térreo com jardim de 45 m², ideal para quem tem pet ou gosta de plantas. Três quartos e duas vagas.", itens: ["Jardim privativo", "Pet friendly", "2 vagas", "Depósito"] },
+];
+const brl = (n) => n.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
+const priceHtml = (im) => im.fin === "aluguel" ? `${brl(im.preco)} <small>/mês</small>` : brl(im.preco);
+
+/* ---------- ilustrações arquitetônicas ---------- */
+function art(a, id) {
+  const { kind, c1, c2 } = a, g = "g" + id.replace(/\W/g, "");
+  let s = `<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Ilustração do imóvel"><defs><linearGradient id="${g}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="#ffffff" stop-opacity=".55"/></linearGradient></defs>
+  <rect width="400" height="300" fill="url(#${g})"/><circle cx="330" cy="62" r="22" fill="#fff" opacity=".7"/>
+  <rect y="238" width="400" height="62" fill="${c2}" opacity=".16"/><rect y="238" width="400" height="2" fill="${c2}" opacity=".35"/>`;
+  const win = (x, y, w, h) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2" fill="#fff" opacity=".85"/>`;
+  if (kind === "casa") {
+    s += `<polygon points="70,130 200,62 330,130" fill="${c2}"/><rect x="86" y="130" width="228" height="108" fill="#fff" opacity=".92"/>
+    <rect x="86" y="130" width="228" height="108" fill="${c2}" opacity=".12"/>${win(108, 156, 56, 46)}${win(236, 156, 56, 46)}
+    <rect x="182" y="170" width="36" height="68" rx="2" fill="${c2}"/><rect x="60" y="236" width="280" height="4" fill="${c2}" opacity=".5"/>
+    <circle cx="48" cy="200" r="30" fill="${c2}" opacity=".4"/><rect x="45" y="214" width="6" height="26" fill="${c2}" opacity=".6"/>`;
+  } else if (kind === "apto" || kind === "cobertura") {
+    const top = kind === "cobertura" ? 52 : 40;
+    s += `<rect x="248" y="98" width="96" height="140" fill="${c2}" opacity=".28"/><rect x="108" y="${top}" width="140" height="${238 - top}" fill="#fff" opacity=".94"/><rect x="108" y="${top}" width="140" height="${238 - top}" fill="${c2}" opacity=".14"/>`;
+    for (let r = 0; r < (kind === "cobertura" ? 5 : 6); r++) for (let c = 0; c < 3; c++) s += win(120 + c * 40, top + 16 + r * 32, 26, 20);
+    s += `<rect x="168" y="208" width="20" height="30" fill="${c2}"/>`;
+    if (kind === "cobertura") s += `<rect x="100" y="${top - 6}" width="156" height="8" fill="${c2}"/><rect x="118" y="${top - 22}" width="40" height="16" fill="${c2}" opacity=".55"/>`;
+    for (let r = 0; r < 4; r++) for (let c = 0; c < 2; c++) s += `<rect x="${262 + c * 38}" y="${112 + r * 30}" width="24" height="16" rx="2" fill="#fff" opacity=".7"/>`;
+  } else {
+    s += `<rect x="50" y="120" width="300" height="118" fill="#fff" opacity=".94"/><rect x="50" y="120" width="300" height="118" fill="${c2}" opacity=".12"/>
+    <rect x="44" y="112" width="312" height="12" fill="${c2}"/><rect x="70" y="146" width="150" height="92" fill="${c2}" opacity=".35"/><rect x="74" y="150" width="68" height="84" fill="#fff" opacity=".6"/><rect x="148" y="150" width="68" height="84" fill="#fff" opacity=".6"/>
+    <rect x="248" y="170" width="40" height="68" fill="${c2}"/><rect x="304" y="150" width="30" height="30" rx="2" fill="#fff" opacity=".85"/>`;
+  }
+  return s + "</svg>";
+}
+
+/* ---------- listagem ---------- */
+const $ = (id) => document.getElementById(id);
+const state = { fin: "venda" };
+
+$("fBairro").insertAdjacentHTML("beforeend", [...new Set(IMOVEIS.map((i) => i.bairro))].sort().map((b) => `<option>${b}</option>`).join(""));
+
+function render() {
+  const tipo = $("fTipo").value, bairro = $("fBairro").value, q = +$("fQuartos").value, ord = $("fOrdem").value;
+  let list = IMOVEIS.filter((i) => i.fin === state.fin && (!tipo || i.tipo === tipo) && (!bairro || i.bairro === bairro) && i.q >= q);
+  if (ord === "menor") list = [...list].sort((a, b) => a.preco - b.preco);
+  if (ord === "maior") list = [...list].sort((a, b) => b.area - a.area);
+  $("count").textContent = `${list.length} ${list.length === 1 ? "resultado" : "resultados"}`;
+  $("grid").innerHTML = list.length ? list.map((i) => `
+    <button class="card" type="button" data-id="${i.id}">
+      <div class="pic">${art(i.art, i.id)}</div>
+      <div><span class="mono">${i.tipo} · ${i.bairro}</span><h3>${i.titulo}</h3></div>
+      <div class="price">${priceHtml(i)}</div>
+      <div class="specs"><span>${i.area} m²</span>${i.q ? `<span>${i.q} ${i.q > 1 ? "quartos" : "quarto"}</span>` : ""}<span>${i.b} ${i.b > 1 ? "banheiros" : "banheiro"}</span><span>${i.v} ${i.v > 1 ? "vagas" : "vaga"}</span></div>
+    </button>`).join("") : `<div class="empty">Nenhum imóvel com esses filtros. Tente ampliar a busca.</div>`;
+}
+["fTipo", "fBairro", "fQuartos", "fOrdem"].forEach((id) => $(id).addEventListener("change", render));
+document.querySelectorAll(".tabs button").forEach((b) => b.addEventListener("click", () => {
+  state.fin = b.dataset.fin;
+  document.querySelectorAll(".tabs button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+  render();
+}));
+$("grid").addEventListener("click", (e) => { const c = e.target.closest(".card"); if (c) openModal(c.dataset.id); });
+
+/* destaque do hero */
+const destaque = IMOVEIS.find((i) => i.id === "AL-1063");
+$("heroArt").innerHTML = art(destaque.art, "hero") + `<span class="tag"><span><span class="mono">Destaque · ${destaque.bairro}</span><br><strong>${destaque.titulo}</strong></span><span class="price">${priceHtml(destaque)}</span></span>`;
+$("heroArt").addEventListener("click", () => openModal(destaque.id));
+
+/* ---------- modal de detalhes ---------- */
+let lastFocus = null;
+function openModal(id) {
+  const i = IMOVEIS.find((x) => x.id === id); if (!i) return;
+  lastFocus = document.activeElement;
+  const ov = $("overlay");
+  ov.innerHTML = `<div class="modal" role="dialog" aria-modal="true" aria-label="${i.titulo}">
+    <button class="iconbtn close" type="button" id="closeModal" aria-label="Fechar">✕</button>
+    <div class="cols">
+      <div class="art">${art(i.art, "m" + i.id)}</div>
+      <div class="body">
+        <span class="mono">${i.tipo} · ${i.bairro} · Cód. ${i.id}</span>
+        <h3>${i.titulo}</h3>
+        <div class="price">${priceHtml(i)}</div>
+        <div class="facts"><div><b>${i.area}</b><span>m²</span></div><div><b>${i.q || "–"}</b><span>quartos</span></div><div><b>${i.b}</b><span>banheiros</span></div><div><b>${i.v}</b><span>vagas</span></div></div>
+        <p style="margin:0;color:var(--muted)">${i.desc}</p>
+        <div class="tags">${i.itens.map((t) => `<span>${t}</span>`).join("")}</div>
+        <div id="visitBox">
+          <form class="stack" id="visitForm" style="padding:16px;border-radius:12px" novalidate>
+            <div class="field"><label class="mono" for="vNome">Nome</label><input id="vNome" autocomplete="name" placeholder="Seu nome"></div>
+            <div class="field"><label class="mono" for="vTel">WhatsApp</label><input id="vTel" inputmode="tel" autocomplete="tel" placeholder="(00) 90000-0000"></div>
+            <button class="btn primary" type="submit">Agendar visita</button>
+          </form>
+        </div>
+      </div>
+    </div></div>`;
+  ov.hidden = false; document.body.style.overflow = "hidden";
+  $("closeModal").focus();
+  $("visitForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const nome = $("vNome").value.trim();
+    if (nome.length < 2) { $("vNome").focus(); $("vNome").style.borderColor = "#d33"; return; }
+    $("visitBox").innerHTML = `<div class="ok"><b>Pedido recebido, ${nome.split(" ")[0]}.</b><span style="color:var(--muted)">Um corretor confirma o horário da visita por WhatsApp. (Demonstração: nenhuma mensagem é enviada.)</span></div>`;
+  });
+}
+function closeModal() { $("overlay").hidden = true; $("overlay").innerHTML = ""; document.body.style.overflow = ""; lastFocus && lastFocus.focus && lastFocus.focus(); }
+$("overlay").addEventListener("click", (e) => { if (e.target.id === "overlay" || e.target.closest("#closeModal")) closeModal(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("overlay").hidden) closeModal(); });
+
+/* ---------- contato ---------- */
+$("contactBox").innerHTML = `<form class="stack" id="contactForm" novalidate>
+  <div class="field"><label class="mono" for="cNome">Nome</label><input id="cNome" autocomplete="name" placeholder="Como podemos te chamar?"></div>
+  <div class="field"><label class="mono" for="cTel">WhatsApp</label><input id="cTel" inputmode="tel" autocomplete="tel" placeholder="(00) 90000-0000"></div>
+  <div class="field"><label class="mono" for="cMsg">O que você procura?</label><textarea id="cMsg" placeholder="Ex.: apartamento de 2 quartos para alugar na Vila Serena, até R$ 3.500"></textarea></div>
+  <button class="btn primary" type="submit">Enviar mensagem</button></form>`;
+$("contactBox").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const nome = $("cNome").value.trim();
+  if (nome.length < 2) { $("cNome").focus(); $("cNome").style.borderColor = "#d33"; return; }
+  $("contactBox").innerHTML = `<div class="stack ok"><b>Obrigado, ${nome.split(" ")[0]}.</b><span style="color:var(--muted)">Retornamos em até 2 horas em dias úteis. (Demonstração: nenhuma mensagem é enviada.)</span></div>`;
+});
+
+/* ---------- tema ---------- */
+$("theme").addEventListener("click", () => {
+  const r = document.documentElement, dark = r.dataset.theme ? r.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  r.dataset.theme = dark ? "light" : "dark";
+});
+
+render();
+</script>
+</body>
+</html>
